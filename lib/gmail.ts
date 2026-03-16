@@ -103,12 +103,14 @@ export async function setupGmailWatch(accessToken: string): Promise<string> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      topicName:   process.env.GOOGLE_PUBSUB_TOPIC!,
-      labelIds:    ['INBOX'],
+      topicName: process.env.GOOGLE_PUBSUB_TOPIC!,
+      labelIds:  ['INBOX'],
       labelFilterBehavior: 'INCLUDE',
     }),
   });
   const data = await res.json();
+  console.log('Gmail watch response:', JSON.stringify(data)); // ← add this
+  if (!data.historyId) throw new Error(`Watch failed: ${JSON.stringify(data)}`);
   return data.historyId;
 }
 
